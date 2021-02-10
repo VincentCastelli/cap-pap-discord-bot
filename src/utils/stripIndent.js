@@ -1,1 +1,1 @@
-module.exports = string => string.replace(/^[ \\t]+/gm, '')
+module.exports = (string) => string.replace(/^[ \\t]+/gm, "");
