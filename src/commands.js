@@ -1,9 +1,10 @@
 const botMention = require("./commands/messaging/botMention");
+const cod = require("./commands/codTracker/cod");
 const gif = require("./commands/media/gif");
 const ping = require("./commands/information/ping");
 const user = require("./commands/information/user");
 
-const commands = { gif, ping, user };
+const commands = { cod, gif, ping, user };
 
 module.exports = async (msg) => {
   if (
