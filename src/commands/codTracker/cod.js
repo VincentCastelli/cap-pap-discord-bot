@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { MessageEmbed } = require("discord.js");
 const CodAPI = require("call-of-duty-api")({ platform: "xbl" });
+const playerTags = require("./battleTags");
 
 const renderLeaderData = async (playerTags) =>
   await Promise.all(
@@ -11,101 +12,32 @@ const renderLeaderData = async (playerTags) =>
     })
   );
 
-module.exports = async (msg, args) => {
-  const playerTags = [
-    "Big Bad Leroy",
-    "Vinsanity25",
-    "sk0witit",
-    "I cAuSe Pain I",
-    "TheRealTone21",
-    "Stizmatic",
-    "ChuBByMaLanGa22",
-  ];
-  const cpapGheyming = await renderLeaderData(playerTags);
+const renderPlayerFields = (cpapGheymingData) => {
+  return playerTags.map((player, idx) => ({
+    name: `${idx + 1}: ${player}`,
+    value: `WINS:  ${
+      cpapGheymingData.find((data) => data.id === player).wins
+    } | K/D:  ${
+      Math.round(
+        (cpapGheymingData.find((data) => data.id === player).kdRatio +
+          Number.EPSILON) *
+          100
+      ) / 100
+    } | REVIVES:  ${
+      cpapGheymingData.find((data) => data.id === player).revives
+    } | GAMES:  ${
+      cpapGheymingData.find((data) => data.id === player).gamesPlayed
+    }`,
+  }));
+};
 
+module.exports = async (msg, args) => {
+  const cpapGheymingData = await renderLeaderData(playerTags);
   const embed = new MessageEmbed()
     .setColor("#0099ff")
     .setTitle("CPaP Gheyming Wall of Honor")
     .setDescription("The finest soldiers CPaP Gheyming has to offer ")
-    .addFields(
-      {
-        name: `1: ${playerTags[0]}`,
-        value: `K/D: ${
-          Math.round(
-            (cpapGheyming.find((player) => player.id === playerTags[0])
-              .kdRatio +
-              Number.EPSILON) *
-              100
-          ) / 100
-        }`,
-      },
-      {
-        name: `2: ${playerTags[1]}`,
-        value: `K/D: ${
-          Math.round(
-            (cpapGheyming.find((player) => player.id === playerTags[1])
-              .kdRatio +
-              Number.EPSILON) *
-              100
-          ) / 100
-        }`,
-      },
-      {
-        name: `3: ${playerTags[2]}`,
-        value: `K/D: ${
-          Math.round(
-            (cpapGheyming.find((player) => player.id === playerTags[2])
-              .kdRatio +
-              Number.EPSILON) *
-              100
-          ) / 100
-        }`,
-      },
-      {
-        name: `4: ${playerTags[3]}`,
-        value: `K/D: ${
-          Math.round(
-            (cpapGheyming.find((player) => player.id === playerTags[3])
-              .kdRatio +
-              Number.EPSILON) *
-              100
-          ) / 100
-        }`,
-      },
-      {
-        name: `5: ${playerTags[4]}`,
-        value: `K/D: ${
-          Math.round(
-            (cpapGheyming.find((player) => player.id === playerTags[4])
-              .kdRatio +
-              Number.EPSILON) *
-              100
-          ) / 100
-        }`,
-      },
-      {
-        name: `6: ${playerTags[5]}`,
-        value: `K/D: ${
-          Math.round(
-            (cpapGheyming.find((player) => player.id === playerTags[5])
-              .kdRatio +
-              Number.EPSILON) *
-              100
-          ) / 100
-        }`,
-      },
-      {
-        name: `7: ${playerTags[6]}`,
-        value: `K/D: ${
-          Math.round(
-            (cpapGheyming.find((player) => player.id === playerTags[6])
-              .kdRatio +
-              Number.EPSILON) *
-              100
-          ) / 100
-        }`,
-      }
-    )
+    .addFields(renderPlayerFields(cpapGheymingData))
     .setFooter("Updated")
     .setTimestamp();
   msg.channel.send(embed);
