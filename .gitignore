@@ -1,5 +1,9 @@
+# Defaults
 node_modules
 .env
 .npmrc
 .DS_Store
 package-lock.jsom
+
+# Files
+**/battleTags.js
